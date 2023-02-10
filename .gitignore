@@ -1,0 +1,12 @@
+#module build
+node_modules
+
+#project build
+.next
+.DS_Store
+
+#vscode settings
+.vscode/settings.json
+
+#env variables
+.env
