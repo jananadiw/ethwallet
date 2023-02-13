@@ -5,6 +5,7 @@ import React, {useEffect, useState} from 'react';
 
 export default function Home() {
   const [walletAddress, setWalletAddress] = useState('');
+  const [etherBalance, setEtherBalance] = useState(0);
 
   // Find connected wallet when page reloads
   useEffect(() => {
@@ -35,8 +36,13 @@ export default function Home() {
           // const accounts = await window.ethereum.request({method: 'eth_accounts'});
           const web3 = new Web3(window.ethereum)
           const accounts = await web3.eth.getAccounts();
+          // FIXME: Provided address  is invalid, the capitalization checksum test failed, or it's an indirect IBAN address which can't be converted. 
+          // const address =web3.utils.toChecksumAddress(accounts[0])
+          const balanceInWei = await web3.eth.getBalance(accounts[0]);
+          const balanceInEth = Math.round(Number(web3.utils.fromWei(balanceInWei, 'ether')) * 1000) / 1000;
           if(accounts.length > 0) {
             setWalletAddress(accounts[0]);
+            setEtherBalance(balanceInEth)
             console.log(accounts[0])
           }else {
             // we've lost connection to the wallet
@@ -59,6 +65,7 @@ export default function Home() {
       });
     } else {
       setWalletAddress('');
+      setEtherBalance(0)
       console.log('metamask is not installed')
     }
   }
@@ -75,6 +82,7 @@ export default function Home() {
        <button className="float-right bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={connectWallet}>{getTrucatedWalletAddress()}</button>
        <div>
         <p className='text-2xl'>Welcome to My Ether Wallet</p>
+        <p className='text-xl m-8 p-8'>{`Ether Balance: ${etherBalance}`}</p>
        </div>
     </div>
     </main>
