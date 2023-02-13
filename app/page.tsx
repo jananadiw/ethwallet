@@ -1,18 +1,18 @@
 'use client'
 
+import Web3 from 'web3';
 import React, {useEffect, useState} from 'react';
-const Web3 = require('web3');
 
 export default function Home() {
   const [walletAddress, setWalletAddress] = useState('');
 
   // Find connected wallet when page reloads
   useEffect(() => {
-    getConnectedWallet();
+    getConnectedAccounts();
     swichAccountListener();
   })
 
-  // // Connect Metamast Wallet
+  // Connect Metamask Wallet
   const connectWallet = async() => {
     if(typeof window != 'undefined' && typeof window.ethereum != 'undefined') {
       try {
@@ -28,8 +28,8 @@ export default function Home() {
     }
   }
 
-  // // Get Currently connect Metamask Wallet
-    const getConnectedWallet = async() => {
+  // Get Currently connect Metamask Wallet Accounts
+    const getConnectedAccounts = async() => {
       if(typeof window != 'undefined' && typeof window.ethereum != 'undefined') {
         try {
           // const accounts = await window.ethereum.request({method: 'eth_accounts'});
@@ -50,7 +50,7 @@ export default function Home() {
       }
     }
 
-  // // Switch Account
+  // Switch Account
   const swichAccountListener = () => {
     if(typeof window != 'undefined' && typeof window.ethereum != 'undefined') {
       window.ethereum.on('accountsChanged', (accounts: any) => {
@@ -63,13 +63,13 @@ export default function Home() {
     }
   }
 
-
   // Get Trucated wallet address
   const getTrucatedWalletAddress = () => {
     return walletAddress && walletAddress.length > 0 ? `Connected: ${walletAddress.substring(0,6)}...${walletAddress.substring(38)}` : `Connect Wallet`
   }
 
   return (
+    <>
     <main>
     <div className='font-mono container m-auto p-8'>
        <button className="float-right bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={connectWallet}>{getTrucatedWalletAddress()}</button>
@@ -78,5 +78,6 @@ export default function Home() {
        </div>
     </div>
     </main>
+    </>
   )
 }
