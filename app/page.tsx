@@ -36,14 +36,12 @@ export default function Home() {
           // const accounts = await window.ethereum.request({method: 'eth_accounts'});
           const web3 = new Web3(window.ethereum)
           const accounts = await web3.eth.getAccounts();
-          // FIXME: Provided address  is invalid, the capitalization checksum test failed, or it's an indirect IBAN address which can't be converted. 
-          // const address =web3.utils.toChecksumAddress(accounts[0])
-          const balanceInWei = await web3.eth.getBalance(accounts[0]);
+          const address = web3.utils.toChecksumAddress(accounts[0]).toLowerCase();
+          const balanceInWei = await web3.eth.getBalance(address);
           const balanceInEth = Math.round(Number(web3.utils.fromWei(balanceInWei, 'ether')) * 1000) / 1000;
           if(accounts.length > 0) {
             setWalletAddress(accounts[0]);
             setEtherBalance(balanceInEth)
-            console.log(accounts[0])
           }else {
             // we've lost connection to the wallet
             console.log('Connect to Metamask')
@@ -61,7 +59,6 @@ export default function Home() {
     if(typeof window != 'undefined' && typeof window.ethereum != 'undefined') {
       window.ethereum.on('accountsChanged', (accounts: any) => {
           setWalletAddress(accounts[0]);
-          console.log(accounts[0]);
       });
     } else {
       setWalletAddress('');
