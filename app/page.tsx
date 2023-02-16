@@ -9,8 +9,8 @@ export default function Home() {
 
   // Find connected wallet when page reloads
   useEffect(() => {
-    swichAccountListener();
     getConnectedAccounts();
+    swichAccountListener();
   })
 
   // Connect Metamask Wallet
@@ -44,6 +44,7 @@ export default function Home() {
             setEtherBalance(balanceInEth)
           }else {
             // we've lost connection to the wallet
+            setEtherBalance(0)
             console.log('Connect to Metamask')
           }
         }catch(e) {
@@ -76,10 +77,17 @@ export default function Home() {
     <>
     <main>
     <div className='font-mono container m-auto p-8'>
-       <button className="float-right bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={connectWallet}>{getTrucatedWalletAddress()}</button>
+       <button className="float-right bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded outline" onClick={connectWallet}>{getTrucatedWalletAddress()}</button>
        <div>
         <p className='text-2xl'>Welcome to My Ether Wallet</p>
-        <p className='text-xl m-8 p-8'>{`Ether Balance: ${etherBalance}`}</p>
+        <div className='text-xl m-8 p-8'>
+          <p>{`Ether Balance: ${etherBalance}`}</p>
+          <p>{`Token Balance: `}</p>
+        </div>
+        <div className='text-l m-8 p-8 flex gap-5'>
+          <button className='bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded'>Send Ether</button>
+          <button className='bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded'>Send Tokens</button>
+        </div>
        </div>
     </div>
     </main>
