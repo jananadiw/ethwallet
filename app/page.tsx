@@ -9,8 +9,8 @@ export default function Home() {
 
   // Find connected wallet when page reloads
   useEffect(() => {
-    getConnectedAccounts();
     swichAccountListener();
+    getConnectedAccounts();
   })
 
   // Connect Metamask Wallet
@@ -36,11 +36,11 @@ export default function Home() {
           // const accounts = await window.ethereum.request({method: 'eth_accounts'});
           const web3 = new Web3(window.ethereum)
           const accounts = await web3.eth.getAccounts();
-          const address = web3.utils.toChecksumAddress(accounts[0]).toLowerCase();
-          const balanceInWei = await web3.eth.getBalance(address);
-          const balanceInEth = Math.round(Number(web3.utils.fromWei(balanceInWei, 'ether')) * 1000) / 1000;
           if(accounts.length > 0) {
             setWalletAddress(accounts[0]);
+            const address = web3.utils.toChecksumAddress(accounts[0]).toLowerCase();
+            const balanceInWei = await web3.eth.getBalance(address);
+            const balanceInEth = Math.round(Number(web3.utils.fromWei(balanceInWei, 'ether')) * 1000) / 1000;
             setEtherBalance(balanceInEth)
           }else {
             // we've lost connection to the wallet
