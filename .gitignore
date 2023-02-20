@@ -10,3 +10,13 @@ node_modules
 
 #env variables
 .env
+
+# truffle
+build
+
+# typechain
+types
+
+# buidler
+artifacts
+cache
