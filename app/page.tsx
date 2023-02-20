@@ -3,27 +3,32 @@
 import Web3 from 'web3';
 import React, { useEffect, useState } from 'react';
 import { TxnButton } from './components/atoms/txnButton';
-// import { Button } from './components/atoms/button';
+import { ConnectWalletButton } from './components/atoms/walletConnectButton';
+import { AccountBalance } from './components/molecules/accountBalance';
 
 export default function Home(): React.ReactElement {
     const [walletAddress, setWalletAddress] = useState('');
     const [etherBalance, setEtherBalance] = useState(0);
+    // Check if window.ethereum is defined
+    const isWindowEthereumDefined = (): boolean => {
+        return (
+            typeof window !== 'undefined' &&
+            typeof window.ethereum !== 'undefined'
+        );
+    };
+    const web3 = new Web3(window.ethereum);
 
     // Find connected wallet when page reloads
     useEffect(() => {
-        // !FIXME: eslint@typescript-eslint/no-floating-promises
+        // TODO: eslint@typescript-eslint/no-floating-promises
         void getConnectedAccounts();
         swichAccountListener();
     });
 
     // Connect Metamask Wallet
     const connectWallet = async (): Promise<void> => {
-        if (
-            typeof window !== 'undefined' &&
-            typeof window.ethereum !== 'undefined'
-        ) {
+        if (isWindowEthereumDefined()) {
             try {
-                const web3 = new Web3(window.ethereum);
                 const accounts = await web3.eth.requestAccounts();
                 setWalletAddress(accounts[0]);
             } catch (e) {
@@ -36,13 +41,8 @@ export default function Home(): React.ReactElement {
 
     // Get Currently connect Metamask Wallet Accounts
     const getConnectedAccounts = async (): Promise<void> => {
-        if (
-            typeof window !== 'undefined' &&
-            typeof window.ethereum !== 'undefined'
-        ) {
+        if (isWindowEthereumDefined()) {
             try {
-                // const accounts = await window.ethereum.request({method: 'eth_accounts'});
-                const web3 = new Web3(window.ethereum);
                 const accounts = await web3.eth.getAccounts();
                 if (accounts.length > 0) {
                     setWalletAddress(accounts[0]);
@@ -71,10 +71,7 @@ export default function Home(): React.ReactElement {
 
     // Switch Account
     const swichAccountListener = () => {
-        if (
-            typeof window !== 'undefined' &&
-            typeof window.ethereum !== 'undefined'
-        ) {
+        if (isWindowEthereumDefined()) {
             window.ethereum.on('accountsChanged', (accounts: any) => {
                 setWalletAddress(accounts[0]);
             });
@@ -85,43 +82,23 @@ export default function Home(): React.ReactElement {
         }
     };
 
-    // Get Trucated wallet address
-    const getTrucatedWalletAddress = (): string => {
-        return walletAddress != null && walletAddress.length > 0
-            ? `Connected: ${walletAddress.substring(
-                  0,
-                  6
-              )}...${walletAddress.substring(38)}`
-            : `Connect Wallet`;
-    };
-
     return (
         <>
             <main>
-                <div className="font-mono container m-auto p-8">
-                    <button
-                        className="float-right bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded outline"
-                        onClick={() => connectWallet}
-                    >
-                        {getTrucatedWalletAddress()}
-                    </button>
+                <div className="font-mono container mx-auto my-56 p-12 bg-gray-100 rounded">
+                    <div className="mx-20">
+                        <ConnectWalletButton
+                            props={walletAddress}
+                            onClick={connectWallet}
+                        />
+                        <p className="text-2xl">Hello, Test Wallet</p>
+                    </div>
+
                     <div>
-                        <p className="text-2xl">Welcome to My Ether Wallet</p>
-                        <div className="text-xl m-8 p-8">
-                            <p>{`Ether Balance: ${etherBalance}`}</p>
-                            <p>{`Token Balance: `}</p>
-                        </div>
-                        <div className="text-l m-8 p-8 flex gap-5">
-                            {/* Alternative Button Component */}
-                            {/* <Button
-                                data={{
-                                    bgColor: 'bg-gray-700',
-                                    text: 'Send Ether',
-                                    hoverColor: 'bg-gray-500',
-                                    color: 'white',
-                                    fontWeight: '700',
-                                }}
-                            /> */}
+                        <AccountBalance
+                            props={{ ether: etherBalance, token: 0 }}
+                        />
+                        <div className="text-l m-8 p-8 flex gap-6 justify-center">
                             <TxnButton data="Send Tokens" />
                             <TxnButton data="Send Ether" />
                         </div>
