@@ -9,14 +9,20 @@ import { AccountBalance } from './components/molecules/accountBalance';
 export default function Home(): React.ReactElement {
     const [walletAddress, setWalletAddress] = useState('');
     const [etherBalance, setEtherBalance] = useState(0);
-    // Check if window.ethereum is defined
-    const isWindowEthereumDefined = (): boolean => {
-        return (
-            typeof window !== 'undefined' &&
-            typeof window.ethereum !== 'undefined'
-        );
-    };
-    const web3 = new Web3(window.ethereum);
+    const [tokenBalance, setTokenBalance] = useState('');
+    // TODO: Move to a separate json file
+    const minABI = [
+        {
+            constant: true,
+            inputs: [
+                { name: 'token', type: 'address' },
+                { name: 'walletAddress', type: 'address' },
+            ],
+            name: 'getBalance',
+            outputs: [{ name: '', type: 'uint256' }],
+            type: 'function',
+        },
+    ];
 
     // Find connected wallet when page reloads
     useEffect(() => {
@@ -27,8 +33,12 @@ export default function Home(): React.ReactElement {
 
     // Connect Metamask Wallet
     const connectWallet = async (): Promise<void> => {
-        if (isWindowEthereumDefined()) {
+        if (
+            typeof window !== 'undefined' &&
+            typeof window.ethereum !== 'undefined'
+        ) {
             try {
+                const web3 = new Web3(window.ethereum);
                 const accounts = await web3.eth.requestAccounts();
                 setWalletAddress(accounts[0]);
             } catch (e) {
@@ -41,8 +51,13 @@ export default function Home(): React.ReactElement {
 
     // Get Currently connect Metamask Wallet Accounts
     const getConnectedAccounts = async (): Promise<void> => {
-        if (isWindowEthereumDefined()) {
+        const tokenAddress = '0x5F69605944797D321443F6E26834A18B089F1748';
+        if (
+            typeof window !== 'undefined' &&
+            typeof window.ethereum !== 'undefined'
+        ) {
             try {
+                const web3 = new Web3(window.ethereum);
                 const accounts = await web3.eth.getAccounts();
                 if (accounts.length > 0) {
                     setWalletAddress(accounts[0]);
@@ -56,9 +71,19 @@ export default function Home(): React.ReactElement {
                                 1000
                         ) / 1000;
                     setEtherBalance(balanceInEth);
+                    const contract = new web3.eth.Contract(
+                        minABI,
+                        tokenAddress
+                    );
+                    const res = await contract.methods
+                        .getBalance(tokenAddress, walletAddress)
+                        .call();
+                    const formatted = web3.utils.fromWei(res);
+                    setTokenBalance(formatted);
                 } else {
                     // we've lost connection to the wallet
                     setEtherBalance(0);
+                    setTokenBalance('');
                     console.log('Connect to Metamask');
                 }
             } catch (e) {
@@ -71,13 +96,17 @@ export default function Home(): React.ReactElement {
 
     // Switch Account
     const swichAccountListener = () => {
-        if (isWindowEthereumDefined()) {
+        if (
+            typeof window !== 'undefined' &&
+            typeof window.ethereum !== 'undefined'
+        ) {
             window.ethereum.on('accountsChanged', (accounts: any) => {
                 setWalletAddress(accounts[0]);
             });
         } else {
             setWalletAddress('');
             setEtherBalance(0);
+            setTokenBalance('');
             console.log('metamask is not installed');
         }
     };
@@ -96,7 +125,7 @@ export default function Home(): React.ReactElement {
 
                     <div>
                         <AccountBalance
-                            props={{ ether: etherBalance, token: 0 }}
+                            props={{ ether: etherBalance, token: tokenBalance }}
                         />
                         <div className="text-l m-8 p-8 flex gap-6 justify-center">
                             <TxnButton data="Send Tokens" />

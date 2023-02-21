@@ -1,7 +1,7 @@
 interface AccoutBalance {
     props: {
         ether: number;
-        token: number;
+        token: string;
     };
 }
 
