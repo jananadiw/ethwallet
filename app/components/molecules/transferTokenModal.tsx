@@ -20,14 +20,14 @@ export function TransferTokenModal({ props, setOpenModal }: any): React.ReactEle
         await contract.methods.transferTokens('0x0dB4931F9Aa07A4f7Acd350Bda2A0aD29b0CaeA8', '10000000000').call();
     };
 
-    const handleChange = (event) => {
+    const handleChange = (event: any) => {
         setTxnInfo({
             ...txnInfo,
             [event.target.id]: event.target.value,
         });
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = (event: any) => {
         event.preventDefault();
     };
 
