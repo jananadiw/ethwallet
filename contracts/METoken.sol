@@ -18,4 +18,9 @@ contract METoken is ERC20 {
 
         return tokenBalance;
     }
+
+    function transferTokens(address recipient, uint256 amount) public {
+        require(balanceOf(msg.sender) >= amount, "Insufficient balance.");
+        _transfer(msg.sender, recipient, amount);
+    }
 }
