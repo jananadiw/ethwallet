@@ -6,29 +6,16 @@ import { TxnButton } from './components/atoms/txnButton';
 import { ConnectWalletButton } from './components/atoms/walletConnectButton';
 import { AccountBalance } from './components/molecules/accountBalance';
 import { TransferEthModal } from './components/molecules/transferEthModal';
+import { TransferTokenModal } from './components/molecules/transferTokenModal';
+import { tokenABI } from '@/public/tokenABI';
 
 export default function Home(): React.ReactElement {
     const [walletAddress, setWalletAddress] = useState('');
     const [etherBalance, setEtherBalance] = useState(0);
     const [tokenBalance, setTokenBalance] = useState('');
-    const tokenAddress = '0x38FdD1B2AB51d54816d435028D12dFf493cE439B';
     const [showEthTxnModal, setShowEthTxnModal] = useState(false);
-    // const [showTokenTxnModal, setShowTokenTxnModal] = useState(false);
-    // const etherTransferAddress = '0x043Ab92F418325eEF1A8A6Ed43C5aF805c5e3bFc';
-
-    // TODO: Move to a separate json file
-    const tokenABI = [
-        {
-            constant: true,
-            inputs: [
-                { name: 'token', type: 'address' },
-                { name: 'walletAddress', type: 'address' },
-            ],
-            name: 'getBalance',
-            outputs: [{ name: '', type: 'uint256' }],
-            type: 'function',
-        },
-    ];
+    const [showTokenTxnModal, setShowTokenTxnModal] = useState(false);
+    const tokenAddress = '0x38FdD1B2AB51d54816d435028D12dFf493cE439B';
 
     // Find connected wallet when page reloads
     useEffect(() => {
@@ -68,6 +55,7 @@ export default function Home(): React.ReactElement {
                     const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
                     // get token balance
                     const res = await tokenContract.methods.getBalance(tokenAddress, walletAddress).call();
+                    console.log('res', res);
                     const formatted = web3.utils.fromWei(res);
                     setTokenBalance(formatted);
                 } else {
@@ -110,12 +98,12 @@ export default function Home(): React.ReactElement {
                     <div>
                         <AccountBalance props={{ ether: etherBalance, token: tokenBalance }} />
                         <div className="text-l m-8 p-8 flex gap-6 justify-center">
-                            {/* <TxnButton
+                            <TxnButton
                                 data="Send Tokens"
                                 onClick={() => {
                                     setShowTokenTxnModal(true);
                                 }}
-                            /> */}
+                            />
                             <TxnButton
                                 data="Send Ether"
                                 onClick={() => {
@@ -126,7 +114,7 @@ export default function Home(): React.ReactElement {
                     </div>
                 </div>
                 {showEthTxnModal && <TransferEthModal props={walletAddress} setOpenModal={setShowEthTxnModal} />}
-                {/* {showTokenTxnModal && <TransferTokenModal props={walletAddress} setOpenModal={setShowTokenTxnModal} />} */}
+                {showTokenTxnModal && <TransferTokenModal props={tokenAddress} setOpenModal={setShowTokenTxnModal} />}
             </main>
         </>
     );

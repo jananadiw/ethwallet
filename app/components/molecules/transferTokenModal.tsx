@@ -3,25 +3,21 @@
 import { useState } from 'react';
 import Web3 from 'web3';
 import { TxnButton } from '../atoms/txnButton';
+import { tokenABI } from '@/public/tokenABI';
 
-export function TransferEthModal({ props, setOpenModal }: any): React.ReactElement {
-    const walletAddress = props;
+export function TransferTokenModal({ props, setOpenModal }: any): React.ReactElement {
+    const tokenAddress = props;
     const [txnInfo, setTxnInfo] = useState({
         address: '',
         amount: '',
     });
 
-    // Send ether to an another account
-    const transferEth = async (): Promise<void> => {
-        // TODO: Take from user input
+    const transferTokens = async () => {
         const web3 = new Web3(window.ethereum);
-        await web3.eth.sendTransaction({
-            from: walletAddress,
-            // to: '0x0dB4931F9Aa07A4f7Acd350Bda2A0aD29b0CaeA8',
-            to: txnInfo.address,
-            value: web3.utils.toWei(`${txnInfo.amount}`, 'ether'),
-            gasPrice: 20000000000,
-        });
+        const contract = new web3.eth.Contract(tokenABI, tokenAddress);
+        // convert amount to wei
+        // const amountWei = web3.utils.toWei(txnInfo.amount);
+        await contract.methods.transferTokens('0x0dB4931F9Aa07A4f7Acd350Bda2A0aD29b0CaeA8', '10000000000').call();
     };
 
     const handleChange = (event) => {
@@ -55,7 +51,7 @@ export function TransferEthModal({ props, setOpenModal }: any): React.ReactEleme
                         onChange={handleChange}
                     />
                     <label className="py-2" htmlFor="amount">
-                        Amount to Send (in Ether):
+                        Amount of tokens:
                     </label>
                     <input
                         className="p-2 rounded"
@@ -66,7 +62,7 @@ export function TransferEthModal({ props, setOpenModal }: any): React.ReactEleme
                         onChange={handleChange}
                     />
                     <div className="mt-8">
-                        <TxnButton data="Confirm Transfer" onClick={transferEth}></TxnButton>
+                        <TxnButton data="Confirm Transfer" onClick={transferTokens}></TxnButton>
                     </div>
                 </form>
             </div>
