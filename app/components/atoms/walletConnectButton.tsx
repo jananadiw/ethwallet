@@ -1,18 +1,12 @@
 'use client';
 
-export function ConnectWalletButton({
-    props,
-    onClick,
-}: any): React.ReactElement {
+export function ConnectWalletButton({ props, onClick }: any): React.ReactElement {
     const walletAddress: string = props;
 
     // Get Trucated wallet address
     const getTrucatedWalletAddress = (): string => {
         return walletAddress != null && walletAddress.length > 0
-            ? `Connected: ${walletAddress.substring(
-                  0,
-                  6
-              )}...${walletAddress.substring(38)}`
+            ? `Connected: ${walletAddress.substring(0, 6)}...${walletAddress.substring(38)}`
             : `Connect Wallet`;
     };
 

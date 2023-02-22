@@ -1,10 +1,6 @@
 import '@/styles/globals.scss';
 
-export default function RootLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}): React.ReactElement {
+export default function RootLayout({ children }: { children: React.ReactNode }): React.ReactElement {
     return (
         <html lang="en">
             <head />
