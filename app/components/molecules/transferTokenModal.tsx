@@ -1,9 +1,11 @@
 'use-client';
 
-import { useState } from 'react';
 import Web3 from 'web3';
+import { useState } from 'react';
 import { TxnButton } from '../atoms/txnButton';
 import { tokenABI } from '@/public/tokenABI';
+// types
+import type { AbiItem } from 'web3-utils';
 
 export function TransferTokenModal({ props, setOpenModal }: any): React.ReactElement {
     const tokenAddress = props;
@@ -12,22 +14,22 @@ export function TransferTokenModal({ props, setOpenModal }: any): React.ReactEle
         amount: '',
     });
 
-    const transferTokens = async () => {
+    const transferTokens = async (): Promise<void> => {
         const web3 = new Web3(window.ethereum);
-        const contract = new web3.eth.Contract(tokenABI, tokenAddress);
+        const contract = new web3.eth.Contract(tokenABI as AbiItem[], tokenAddress);
         // convert amount to wei
         // const amountWei = web3.utils.toWei(txnInfo.amount);
         await contract.methods.transferTokens('0x0dB4931F9Aa07A4f7Acd350Bda2A0aD29b0CaeA8', '10000000000').call();
     };
 
-    const handleChange = (event: any) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setTxnInfo({
             ...txnInfo,
             [event.target.id]: event.target.value,
         });
     };
 
-    const handleSubmit = (event: any) => {
+    const handleSubmit = (event: React.FormEvent): void => {
         event.preventDefault();
     };
 

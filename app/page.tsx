@@ -8,6 +8,8 @@ import { AccountBalance } from './components/molecules/accountBalance';
 import { TransferEthModal } from './components/molecules/transferEthModal';
 import { TransferTokenModal } from './components/molecules/transferTokenModal';
 import { tokenABI } from '@/public/tokenABI';
+// types
+import type { AbiItem } from 'web3-utils';
 
 export default function Home(): React.ReactElement {
     const [walletAddress, setWalletAddress] = useState('');
@@ -52,7 +54,7 @@ export default function Home(): React.ReactElement {
                     const balanceInEth = Math.round(Number(web3.utils.fromWei(balanceInWei, 'ether')) * 1000) / 1000;
                     setEtherBalance(balanceInEth);
                     // connect to contract
-                    const tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
+                    const tokenContract = new web3.eth.Contract(tokenABI as AbiItem[], tokenAddress);
                     // get token balance
                     const res = await tokenContract.methods.getBalance(tokenAddress, walletAddress).call();
                     console.log('res', res);
@@ -73,7 +75,7 @@ export default function Home(): React.ReactElement {
     };
 
     // Switch Account
-    const swichAccountListener = () => {
+    const swichAccountListener = (): void => {
         if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
             window.ethereum.on('accountsChanged', (accounts: any) => {
                 setWalletAddress(accounts[0]);

@@ -13,7 +13,6 @@ export function TransferEthModal({ props, setOpenModal }: any): React.ReactEleme
 
     // Send ether to an another account
     const transferEth = async (): Promise<void> => {
-        // TODO: Take from user input
         const web3 = new Web3(window.ethereum);
         await web3.eth.sendTransaction({
             from: walletAddress,
