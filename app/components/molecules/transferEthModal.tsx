@@ -24,14 +24,14 @@ export function TransferEthModal({ props, setOpenModal }: any): React.ReactEleme
         });
     };
 
-    const handleChange = (event: any) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
         setTxnInfo({
             ...txnInfo,
             [event.target.id]: event.target.value,
         });
     };
 
-    const handleSubmit = (event: any) => {
+    const handleSubmit = (event: React.FormEvent): void => {
         event.preventDefault();
     };
 
