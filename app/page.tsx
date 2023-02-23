@@ -17,7 +17,7 @@ export default function Home(): React.ReactElement {
     const [tokenBalance, setTokenBalance] = useState('');
     const [showEthTxnModal, setShowEthTxnModal] = useState(false);
     const [showTokenTxnModal, setShowTokenTxnModal] = useState(false);
-    const tokenAddress = '0x38FdD1B2AB51d54816d435028D12dFf493cE439B';
+    const tokenAddress = '0x9a7E04844BE884ff4e828d92ea4A6D204D793Bbe';
 
     // Find connected wallet when page reloads
     useEffect(() => {
