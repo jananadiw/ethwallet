@@ -14,12 +14,15 @@ export function TransferTokenModal({ props, setOpenModal }: any): React.ReactEle
         amount: '',
     });
 
-    const transferTokens = async (): Promise<void> => {
+    const transferToken = async (): Promise<void> => {
         const web3 = new Web3(window.ethereum);
-        const contract = new web3.eth.Contract(tokenABI as AbiItem[], tokenAddress);
-        // convert amount to wei
-        // const amountWei = web3.utils.toWei(txnInfo.amount);
-        await contract.methods.transferTokens('0x0dB4931F9Aa07A4f7Acd350Bda2A0aD29b0CaeA8', '10000000000').call();
+        const tokenContract = new web3.eth.Contract(tokenABI as AbiItem[], tokenAddress);
+        // get current connected account
+        const accounts = await web3.eth.getAccounts();
+        // Send the data to the contract, contract sends the tokens to receiver account.
+        await tokenContract.methods
+            .transferTokens(txnInfo.address, web3.utils.toWei(txnInfo.amount.toString()))
+            .send({ from: accounts[0] });
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -64,7 +67,7 @@ export function TransferTokenModal({ props, setOpenModal }: any): React.ReactEle
                         onChange={handleChange}
                     />
                     <div className="mt-8">
-                        <TxnButton data="Confirm Transfer" onClick={transferTokens}></TxnButton>
+                        <TxnButton data="Confirm Transfer" onClick={transferToken}></TxnButton>
                     </div>
                 </form>
             </div>
