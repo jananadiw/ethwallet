@@ -22,7 +22,7 @@ export default function Home(): React.ReactElement {
     // Find connected wallet when page reloads
     useEffect(() => {
         void getConnectedAccounts();
-        swichAccountListener();
+        switchAccountListener();
     });
 
     // Connect Metamask Wallet
@@ -75,7 +75,7 @@ export default function Home(): React.ReactElement {
     };
 
     // Switch Account
-    const swichAccountListener = (): void => {
+    const switchAccountListener = (): void => {
         if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
             window.ethereum.on('accountsChanged', (accounts: any) => {
                 setWalletAddress(accounts[0]);
@@ -92,9 +92,9 @@ export default function Home(): React.ReactElement {
         <>
             <main>
                 <div className="font-mono container mx-auto my-56 p-12 bg-gray-100 rounded">
-                    <div className="mx-20">
+                    <div className="mx-0">
                         <ConnectWalletButton props={walletAddress} onClick={connectWallet} />
-                        <p className="text-2xl">Hello, Test Wallet</p>
+                        <p className="text-2xl">SimplePay Wallet</p>
                     </div>
 
                     <div>
